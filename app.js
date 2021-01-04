@@ -55,7 +55,34 @@ var menu = [
 
 //Add departments, roles, employees
 
-function addDepartment(){};
+function addDepartment(){
+
+    let departmentAdd = [
+        {
+                
+            type: 'input',
+            name: 'name',
+            message: 'Insert the name of the department'
+
+        }
+    ];
+
+    inquirer.prompt(departmentAdd).then(function(response){
+
+        let query = connection.query(
+            "INSERT INTO department SET ?",
+            {
+              name: response.name              
+            },
+            function(err, res) {
+              if (err) throw err;
+              runApp();
+            }
+          );
+
+    });
+
+};
 
 function addRole(){};
 
@@ -121,10 +148,10 @@ function runApp(){
                 break;
             case "View Roles":
                 viewRoles();
-                
-                
-                
                 break;    
+            case "Add Department":
+                addDepartment();
+                break;       
             default:
                 console.log(response.type);
             
