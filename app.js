@@ -85,7 +85,7 @@ function addDepartment(){
 };
 
 function addRole(){
-    let departments = connection.query('select * from department',(err, results) => {
+    connection.query('select * from department',(err, results) => {
         if (err) throw err;
         let alldeps = JSON.stringify(results);
         var options = JSON.parse(alldeps);
@@ -152,7 +152,95 @@ function addRole(){
     
 };
 
-function addEmployee(){};
+function addEmployee(){
+    //get all roles
+    connection.query('select * from role',(err,res)=>{
+        if (err) throw err;
+        let parsedRes = JSON.stringify(res); 
+        let roles = JSON.parse(parsedRes);
+        
+
+        let roleList = roles.map(function(key){
+            var option = {name:key.name,value:key.id}
+            return option;
+        });
+
+        //get managers 
+        connection.query('select * from employee where role_id = 1',(err,res)=>{
+            if (err) throw err;
+            let parsedRes = JSON.stringify(res); 
+            let managers = JSON.parse(parsedRes);
+            
+    
+            let managerList = managers.map(function(key){
+                var option = {name:key.first_name + " "+key.last_name,value:key.id}
+                return option;
+            });
+            
+            let employeeAdd = [
+                {
+                        
+                    type: 'input',
+                    name: 'name',
+                    message: 'Insert the name of the employee'
+        
+                },
+                {
+                        
+                    type: 'input',
+                    name: 'first_name',
+                    message: 'Insert the first name of the employee'
+        
+                },
+                {
+                        
+                    type: 'input',
+                    name: 'last_name',
+                    message: 'Insert the last name of the employee'
+        
+                },
+                {
+                        
+                    type: 'list',
+                    name: 'role',
+                    choices : roleList,
+                    message: 'Select the role of the employee'
+        
+                },
+                {
+                        
+                    type: 'list',
+                    name: 'manager',
+                    choices : managerList,
+                    message: 'Select the manager of the employee'
+        
+                }
+            ];
+
+            inquirer.prompt(employeeAdd).then(function(response){
+                
+                let query = connection.query(
+                    "INSERT INTO employee SET ?",
+                    {
+                      name: response.name,
+                      first_name: response.first_name,   
+                      last_name:response.last_name,
+                      role_id:response.role,
+                      manager_id:response.manager            
+                    },
+                    function(err, res) {
+                      if (err) throw err;
+                      runApp();
+                    }
+                  );
+
+            });
+            
+           
+        });
+    });
+    
+};
 
 function updateEmployeeRole(){};
 
@@ -220,7 +308,10 @@ function runApp(){
                 break; 
             case "Add Role":
                 addRole();
-                break;       
+                break;    
+            case "Add Employee":
+                addEmployee();
+                break;   
             default:
                 console.log(response.type);
             
