@@ -9,10 +9,9 @@ var menu = [
         
     type: 'rawlist',
     name: 'type',
-    message: 'Select an option',
+    message: '-------Menu-------',
     choices: [
 
-       new inquirer.Separator('-------Menu-------'),
        new inquirer.Separator(' '),
        {name:"Add Department"},
        {name:"Add Role"},
@@ -22,6 +21,7 @@ var menu = [
        {name:"View Departments"},
        {name:"View Roles"},
        {name:"View Employees"},
+       {name:"Exit"}
       
     ],
   }
@@ -47,3 +47,16 @@ function viewRoles(){};
 function viewEmployees(){};
 
 //Update employee roles
+
+//main function
+
+function runApp(){
+
+    inquirer.prompt(menu).then(function(response){
+
+        console.log(response);
+
+    });
+}
+
+runApp();
