@@ -242,7 +242,83 @@ function addEmployee(){
     
 };
 
-function updateEmployeeRole(){};
+function updateEmployeeRole(){
+
+    connection.query("select * from employee",(err,res)=>{
+        if(err) throw err
+        let resParsed = JSON.stringify(res);
+        let listEmployee = JSON.parse(resParsed);
+        
+        let optionsEmp = listEmployee.map(function(key){
+            var option = {name:key.name,value:key.id}
+            return option;
+
+        });
+
+        let employeeSelect = [
+            {
+                type:"list",
+                name: "employee",
+                choices: optionsEmp,
+                message: "Select the employee you want to update"
+            }
+        ];
+
+        inquirer.prompt(employeeSelect).then(function(response){
+
+            let empQquery = 'select * from employee where id =' + response.employee;
+            console.log(empQquery);
+            let selectedEmployee = response.employee;
+            connection.query("select * from role",(err,res)=>{
+                if(err) throw err
+
+                let parsedRes = JSON.stringify(res); 
+                let roles = JSON.parse(parsedRes);
+
+                let roleList = roles.map(function(key){
+                    var option = {name:key.name,value:key.id}
+                    return option;
+                });
+
+                let optionsUpdate = [
+                    {
+                        type:"list",
+                        name:"role",
+                        choices: roleList,
+                        message: "Select the new role for the employee"
+
+                    }
+                ];
+                
+                inquirer.prompt(optionsUpdate).then(function(response){
+                    let queryUpdate = "update employee set role_id = "+ response.role +" where id = " + selectedEmployee;
+                    connection.query(queryUpdate,(err,res)=>{
+                        if(err) throw err
+                        console.log("employee updated");
+                        runApp();
+                    });
+                });
+
+            });
+            /*connection.query(empQquery,(err,res)=>{
+                if(err) throw err
+                let resParsed = JSON.stringify(res);
+                let resultEmployee = JSON.parse(resParsed);
+    
+                if(resultEmployee.length = 0)
+                {console.log("The employee id doesnt exist");}
+                else
+                {}
+            });*/
+    
+        });
+
+    });
+
+   
+
+    
+};
 
 //View departments, roles, employees
 
@@ -283,7 +359,7 @@ function exit(){
     connection.end();
 }
 
-//Update employee roles
+
 
 //main function
 
@@ -312,6 +388,9 @@ function runApp(){
             case "Add Employee":
                 addEmployee();
                 break;   
+            case "Update Employee Role":
+                    updateEmployeeRole();
+                break;     
             default:
                 console.log(response.type);
             
