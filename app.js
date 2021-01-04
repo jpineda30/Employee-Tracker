@@ -84,7 +84,73 @@ function addDepartment(){
 
 };
 
-function addRole(){};
+function addRole(){
+    let departments = connection.query('select * from department',(err, results) => {
+        if (err) throw err;
+        let alldeps = JSON.stringify(results);
+        var options = JSON.parse(alldeps);
+        
+       
+        
+
+         let newOptions = options.map(function(key){
+            var option = {name:key.name,value:key.id}
+            return option;
+        });
+        console.log(newOptions);
+
+        let roleAdd = [
+            {
+                    
+                type: 'input',
+                name: 'name',
+                message: 'Insert the name of the role'
+    
+            },
+            {
+                    
+                type: 'input',
+                name: 'title',
+                message: 'Insert the title of the role'
+    
+            },
+            {
+                    
+                type: 'input',
+                name: 'salary',
+                message: 'Insert the salary for the role'
+    
+            },
+            {
+                    
+                type: 'list',
+                name: 'department',
+                choices : newOptions,
+                message: 'Insert the name of the department'
+    
+            }
+        ];
+        
+        inquirer.prompt(roleAdd).then(function(response){
+            let query = connection.query(
+                "INSERT INTO role SET ?",
+                {
+                  name: response.name,
+                  title: response.title,   
+                  salary:response.salary,
+                  department_id:response.department         
+                },
+                function(err, res) {
+                  if (err) throw err;
+                  runApp();
+                }
+              );
+        });
+        
+    });
+
+    
+};
 
 function addEmployee(){};
 
@@ -151,6 +217,9 @@ function runApp(){
                 break;    
             case "Add Department":
                 addDepartment();
+                break; 
+            case "Add Role":
+                addRole();
                 break;       
             default:
                 console.log(response.type);
