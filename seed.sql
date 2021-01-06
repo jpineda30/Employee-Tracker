@@ -1,37 +1,19 @@
-drop database if EXISTS employee_trackerDB;
+insert into department (name)
+values 
+("IT"),("Management"),("Sales");
 
-create database employee_trackerDB;
+insert into role (title,salary,department_id) 
+values 
+("Manager","70000","2");
+("Consultant jr","30000","1");
+("Consultant senior","50000","1");
+("Sales rep","50000","3");
 
-use employee_trackerDB;
+insert into employee (id,name,first_name,last_name,role_id,manager_id)
+values
+("Marcela","Dupeyron","1","1");
+("Pedro","Reyes","3","1");
+("Alison","Gonzales","3","2");
 
 
-CREATE TABLE department(
-  
- id INT PRIMARY KEY,
- name VARCHAR(30)
-  
-);
 
-CREATE TABLE role(
-  
- id INT PRIMARY KEY,
- name VARCHAR(30),
- title VARCHAR(30),
- salary DECIMAL,
- department_id int
-
-  
-);
-
-CREATE TABLE employee(
-  
- id INT PRIMARY KEY,
- name VARCHAR(30),
- first_name VARCHAR(30),
- last_name VARCHAR(30),
- role_id int,
- manager_id int
- 
-
-  
-);
