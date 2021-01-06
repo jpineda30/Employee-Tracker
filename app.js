@@ -26,10 +26,6 @@ function startConection(){
       });
 }  
 
-  
-
-
-
 var menu = [
     {
         
@@ -43,9 +39,15 @@ var menu = [
        {name:"Add Role"},
        {name:"Add Employee"},
        {name:"Update Employee Role"},
+       {name:"Update employee manager"},
+       {name:"View employees by manager"},
        {name:"View Departments"},
        {name:"View Roles"},
        {name:"View Employees"},
+       {name:"View budget by department"},
+       {name:"Delete Department"},
+       {name:"Delete Role"},
+       {name:"Delete Employee"},
        {name:"Exit"}
       
     ],
@@ -155,7 +157,7 @@ function addEmployee(){
         
 
         let roleList = roles.map(function(key){
-            var option = {name:key.name,value:key.id}
+            var option = {name:key.title,value:key.id}
             return option;
         });
 
@@ -237,7 +239,7 @@ function updateEmployeeRole(){
         let listEmployee = JSON.parse(resParsed);
         
         let optionsEmp = listEmployee.map(function(key){
-            var option = {name:key.name,value:key.id}
+            var option = {name:key.first_name + " "+ key.last_name,value:key.id}
             return option;
 
         });
@@ -263,7 +265,7 @@ function updateEmployeeRole(){
                 let roles = JSON.parse(parsedRes);
 
                 let roleList = roles.map(function(key){
-                    var option = {name:key.name,value:key.id}
+                    var option = {name:key.title,value:key.id}
                     return option;
                 });
 
@@ -307,6 +309,83 @@ function updateEmployeeRole(){
     
 };
 
+function updateEmployeeManager(){
+    
+    connection.query("SELECT * FROM employee", function(err, res) {
+        if (err) throw err;
+        let parsed = JSON.stringify(res);
+        let list = JSON.parse(parsed);
+
+        var optionsList = list.map(function(key){
+            let option = {name:key.first_name + " "+ key.last_name,value:key.id}
+            return option;
+
+        })
+        
+       
+        let filtered = list.filter((key)=>{
+            if(key.role_id == "1") 
+            {return key;}
+        });
+        var managerList = filtered.map(key=>{
+            
+            if(key.role_id == "1")
+            {
+                let optionManager = {name:key.first_name + " "+ key.last_name,value:key.id}
+                return optionManager;
+    
+             
+            }
+           
+            
+        });
+
+ 
+
+        let menu = [
+            {
+                type:"list",
+                name: "employee",
+                choices: optionsList,
+                message:"Select the employee to update"
+            }
+    
+        ];
+    
+        inquirer.prompt(menu).then((response)=>{
+                      
+    
+            let selected = response.employee;
+    
+            let menuManagers = [
+                {
+                    type:"list",
+                    name: "Manager",
+                    choices: managerList,
+                    message:"Select the new manager"
+                }
+        
+            ];
+            inquirer.prompt(menuManagers).then((response)=>{
+                let query = "update employee set manager_id ="+response.Manager+" where id="+ selected;
+                connection.query(query,(err, res)=>{
+                    if(err) throw err
+                    console.log("Success");
+                    runApp();
+                });
+            });
+    
+            
+            
+    
+        });
+
+    })
+    
+
+   
+};
+
 //View departments, roles, employees
 
 function viewDepartments(){
@@ -319,6 +398,52 @@ function viewDepartments(){
       });
     
 
+};
+
+function getDepartments(){
+    connection.query("SELECT * FROM department", function(err, res) {
+        if (err) throw err;
+        let parsed = JSON.stringify(res);
+        let list = JSON.parse(parsed);
+        let optionsList = list.map(function(key){
+            var option = {name:key.title,value:key.id}
+            return option;
+
+        })
+
+        return optionsList;
+    })
+};
+
+function getRoles(){
+    connection.query("SELECT * FROM role", function(err, res) {
+        if (err) throw err;
+        let parsed = JSON.stringify(res);
+        let list = JSON.parse(parsed);
+        let optionsList = list.map(function(key){
+            var option = {name:key.title,value:key.id}
+            return option;
+
+        })
+
+        return optionsList;
+    })
+};
+
+function getEmployees(){
+
+     connection.query("SELECT * FROM employee", function(err, res) {
+        if (err) throw err;
+        let parsed = JSON.stringify(res);
+        let list = JSON.parse(parsed);
+        let optionsList = list.map(function(key){
+            var option = {name:key.title,value:key.id}
+            return option;
+
+        })
+
+        return optionsList;
+    })
 };
 
 function viewRoles(){
@@ -342,6 +467,195 @@ function viewEmployees(){
     
 };
 
+function viewByManager(){
+
+    connection.query("SELECT * FROM employee", function(err, res) {
+        if (err) throw err;
+        let parsed = JSON.stringify(res);
+        let list = JSON.parse(parsed);
+
+        var optionsList = list.map(function(key){
+            let option = {name:key.first_name + " "+ key.last_name,value:key.id}
+            return option;
+
+        })
+        
+       
+        let filtered = list.filter((key)=>{
+            if(key.role_id == "1") 
+            {return key;}
+        });
+
+        var managerList = filtered.map(key=>{
+            
+            if(key.role_id == "1")
+            {
+                let optionManager = {name:key.first_name + " "+ key.last_name,value:key.id}
+                return optionManager;
+    
+             
+            }
+           
+            
+        });
+
+ 
+
+        let menu = [
+            {
+                type:"list",
+                name: "employee",
+                choices: managerList,
+                message:"Select the manager to view employees"
+            }
+    
+        ];
+    
+        inquirer.prompt(menu).then((response)=>{
+                      
+    
+            let selected = response.employee;
+            let query = "get * from employee where manager_id ="+selected;
+            
+            connection.query(query,(err, res)=>{
+                if(err) throw err
+                console.table(res);
+                runApp();
+            });
+           
+            
+            
+            
+    
+        });
+
+    })
+}
+
+function getBudget(){
+
+    let query ='SELECT *, SUM(salary) AS budget FROM employee INNER JOIN role ON role.id = employee.role_id INNER JOIN department ON department.id = role.department_id group by name;';
+    connection.query(query, function(err, res) {
+        if (err) throw err;
+        let parsed = JSON.stringify(res);
+        let list = JSON.parse(parsed);
+
+        var budget = list.map(function(key){
+            let department = {name:key.name,budget:key.budget}
+            return department;
+
+        })
+
+        console.table(budget);
+        
+    }) 
+        
+}
+
+//delete functions
+
+function deleteDepartment(){
+
+    connection.query("SELECT * FROM department", function(err, res) {
+        if (err) throw err;
+        let parsed = JSON.stringify(res);
+        let list = JSON.parse(parsed);
+        let optionsList = list.map(function(key){
+            var option = {name:key.name,value:key.id}
+            return option;
+
+        })
+        
+
+        let menu = [
+
+            {
+                type:"list",
+                name:"department",
+                choices: optionsList,
+                message:"Select the department to delete"
+            }
+        ];
+        
+        inquirer.prompt(menu).then((response)=>{
+            let query = "delete from department where id ="+response.department;
+            connection.query(query,(err,res)=>{
+                console.log("Succesfull delete");
+                runApp();
+            });
+        });
+    })
+
+};
+
+function deleteEmployee(){
+
+    connection.query("SELECT * FROM employee", function(err, res) {
+        if (err) throw err;
+        let parsed = JSON.stringify(res);
+        let list = JSON.parse(parsed);
+        let optionsList = list.map(function(key){
+            var option = {name:key.first_name + " "+key.last_name,value:key.id}
+            return option;
+
+        })
+        
+
+        let menu = [
+
+            {
+                type:"list",
+                name:"employee",
+                choices: optionsList,
+                message:"Select the employee to delete"
+            }
+        ];
+        
+        inquirer.prompt(menu).then((response)=>{
+            let query = "delete from employee where id ="+response.employee;
+            connection.query(query,(err,res)=>{
+                console.log("Succesfull delete");
+                runApp();
+            });
+        });
+    })
+
+};
+
+function deleteRole(){
+
+    connection.query("SELECT * FROM role", function(err, res) {
+        if (err) throw err;
+        let parsed = JSON.stringify(res);
+        let list = JSON.parse(parsed);
+        let optionsList = list.map(function(key){
+            var option = {name:key.title,value:key.id}
+            return option;
+
+        })
+        
+
+        let menu = [
+
+            {
+                type:"list",
+                name:"role",
+                choices: optionsList,
+                message:"Select the role to delete"
+            }
+        ];
+        
+        inquirer.prompt(menu).then((response)=>{
+            let query = "delete from role where id ="+response.role;
+            connection.query(query,(err,res)=>{
+                console.log("Succesfull delete");
+                runApp();
+            });
+        });
+    })
+
+};
+
 function exit(){
     connection.end();
 }
@@ -351,8 +665,7 @@ function exit(){
 //main function
 
 function runApp(){
-    
-
+ 
     inquirer.prompt(menu).then(function(response){
 
         switch(response.type){
@@ -365,7 +678,10 @@ function runApp(){
                 break;
             case "View Roles":
                 viewRoles();
-                break;    
+                break;   
+            case "View employees by manager":
+                viewByManager();
+                break; 
             case "Add Department":
                 addDepartment();
                 break; 
@@ -377,7 +693,23 @@ function runApp(){
                 break;   
             case "Update Employee Role":
                     updateEmployeeRole();
-                break;     
+                break;
+            case "Update employee manager":
+                    updateEmployeeManager();
+                break;  
+            case "Delete Department":
+                    deleteDepartment();
+                break;      
+            case "Delete Employee":
+                    deleteEmployee();
+                break; 
+            case "Delete Role":
+                    deleteRole();
+                break; 
+            case "View budget by department":
+                    getBudget();
+                break; 
+                        
             default:
                 console.log(response.type);
             
