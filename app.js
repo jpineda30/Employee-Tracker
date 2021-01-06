@@ -99,7 +99,7 @@ function addRole(){
             var option = {name:key.name,value:key.id}
             return option;
         });
-        console.log(newOptions);
+        
 
         let roleAdd = [
             
@@ -400,52 +400,6 @@ function viewDepartments(){
 
 };
 
-function getDepartments(){
-    connection.query("SELECT * FROM department", function(err, res) {
-        if (err) throw err;
-        let parsed = JSON.stringify(res);
-        let list = JSON.parse(parsed);
-        let optionsList = list.map(function(key){
-            var option = {name:key.title,value:key.id}
-            return option;
-
-        })
-
-        return optionsList;
-    })
-};
-
-function getRoles(){
-    connection.query("SELECT * FROM role", function(err, res) {
-        if (err) throw err;
-        let parsed = JSON.stringify(res);
-        let list = JSON.parse(parsed);
-        let optionsList = list.map(function(key){
-            var option = {name:key.title,value:key.id}
-            return option;
-
-        })
-
-        return optionsList;
-    })
-};
-
-function getEmployees(){
-
-     connection.query("SELECT * FROM employee", function(err, res) {
-        if (err) throw err;
-        let parsed = JSON.stringify(res);
-        let list = JSON.parse(parsed);
-        let optionsList = list.map(function(key){
-            var option = {name:key.title,value:key.id}
-            return option;
-
-        })
-
-        return optionsList;
-    })
-};
-
 function viewRoles(){
 
    connection.query("SELECT * FROM role", function(err, res) {
@@ -513,9 +467,10 @@ function viewByManager(){
     
         inquirer.prompt(menu).then((response)=>{
                       
-    
+            
             let selected = response.employee;
-            let query = "get * from employee where manager_id ="+selected;
+            
+            let query = "select * from employee where manager_id ="+selected;
             
             connection.query(query,(err, res)=>{
                 if(err) throw err
@@ -547,6 +502,7 @@ function getBudget(){
         })
 
         console.table(budget);
+        runApp();
         
     }) 
         
@@ -656,9 +612,7 @@ function deleteRole(){
 
 };
 
-function exit(){
-    connection.end();
-}
+
 
 
 
