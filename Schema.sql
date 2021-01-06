@@ -7,14 +7,14 @@ use employee_trackerDB;
 
 CREATE TABLE department(
   
- id INT PRIMARY KEY,
+ id INT auto_increment PRIMARY KEY ,
  name VARCHAR(30)
   
 );
 
 CREATE TABLE role(
   
- id INT PRIMARY KEY,
+ id INT auto_increment PRIMARY KEY,
  title VARCHAR(30),
  salary DECIMAL,
  department_id int
@@ -24,7 +24,7 @@ CREATE TABLE role(
 
 CREATE TABLE employee(
   
- id INT PRIMARY KEY,
+ id INT auto_increment PRIMARY KEY,
  first_name VARCHAR(30),
  last_name VARCHAR(30),
  role_id int,

@@ -100,13 +100,7 @@ function addRole(){
         console.log(newOptions);
 
         let roleAdd = [
-            {
-                    
-                type: 'input',
-                name: 'name',
-                message: 'Insert the name of the role'
-    
-            },
+            
             {
                     
                 type: 'input',
@@ -135,7 +129,7 @@ function addRole(){
             let query = connection.query(
                 "INSERT INTO role SET ?",
                 {
-                  name: response.name,
+                 
                   title: response.title,   
                   salary:response.salary,
                   department_id:response.department         
@@ -181,13 +175,6 @@ function addEmployee(){
                 {
                         
                     type: 'input',
-                    name: 'name',
-                    message: 'Insert the name of the employee'
-        
-                },
-                {
-                        
-                    type: 'input',
                     name: 'first_name',
                     message: 'Insert the first name of the employee'
         
@@ -222,7 +209,7 @@ function addEmployee(){
                 let query = connection.query(
                     "INSERT INTO employee SET ?",
                     {
-                      name: response.name,
+                      
                       first_name: response.first_name,   
                       last_name:response.last_name,
                       role_id:response.role,
