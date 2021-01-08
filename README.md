@@ -26,7 +26,7 @@ Employee tracker is an aplication than allows you to create and update a team of
 
 it allows the user to create employees, roles and departments in a database. Allows the user to view the data stored in the data base in a CLI interface. Allows the user to update employee roles.
 
-See the use of the program in this video:  
+See the use of the program in this video: https://youtu.be/vmqlSP0JZe0 
 
 
 ## User info
