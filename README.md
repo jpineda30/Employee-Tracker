@@ -19,7 +19,7 @@ Employee tracker is an aplication than allows you to create and update a team of
 
 1.-Use *npm i* to install dependencies 
 2.-Start the application by entering the comand *node app.js* in console. 
-3.-Select the option for the menu using arrow keys, enter to confirm the opcion and     enter the data the application ask for. 
+3.-Select the option for the menu using arrow keys, enter to confirm the option and     enter the data the application ask for. 
 4.- Select exit in the menu to close the application. 
 
 ## Proyect Usage
