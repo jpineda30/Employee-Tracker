@@ -6,7 +6,7 @@
 
 [2-Proyect Instalation](##Proyect-Instalation)
 
-[3-Proyect Usage](##Proyect-Testing)
+[3-Proyect Usage](##Proyect-Usage)
 
 [4-User info](##User-info)
 
@@ -24,7 +24,7 @@ Employee tracker is an aplication than allows you to create and update a team of
 
 ## Proyect Usage
 
-it allows the user to create employees, roles and departments in a database. Allows the user to view the data stored in the data base in a CLI interface. Allows the user to update employee roles.
+It allows the user to create, view and delete employees, roles and departments in a database. Allows the user to view the data stored in the data base in a CLI interface. Allows the user to update employee roles and employee manager.
 
 See the use of the program in this video: 
 
